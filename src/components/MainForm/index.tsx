@@ -7,10 +7,10 @@ import { useTaskContext } from '../../contexts/TaskContext/useTaskContext';
 import type { TaskModel } from '../../models/TaskModel';
 import { getNextCycle } from '../../utils/getNextCycle';
 import { getNextCycleType } from '../../utils/getNextCycleType';
+import { formatSecondsToMinutes } from '../../utils/formatSecondsToMinutes';
 
 export function MainForm() {
-
-  const { state,setState } = useTaskContext();
+  const { state, setState } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
 
   //ciclos
@@ -19,12 +19,12 @@ export function MainForm() {
 
   function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    
+
     if (taskNameInput.current === null) return;
 
     const taskName = taskNameInput.current.value.trim();
 
-    if(!taskName) {
+    if (!taskName) {
       alert('Por favor, adicione um nome para a tarefa.');
       return;
     }
@@ -35,7 +35,7 @@ export function MainForm() {
       startDate: Date.now(),
       completeDate: null,
       interruptDate: null,
-      duration: 1,
+      duration: state.config[nextCycleType],
       type: nextCycleType,
     };
 
@@ -46,9 +46,9 @@ export function MainForm() {
         ...prevState,
         config: { ...prevState.config },
         activeTask: newTask,
-        currentCycle: nextCycle, 
+        currentCycle: nextCycle,
         secondsRemaining, // Conferir
-        formattedSecondsRemaining: '00:00', // Conferir
+        formattedSecondsRemaining: formatSecondsToMinutes(secondsRemaining),
         tasks: [...prevState.tasks, newTask],
       };
     });
@@ -63,6 +63,7 @@ export function MainForm() {
           type='text'
           placeholder='Digite algo'
           ref={taskNameInput}
+          disabled={!!state.activeTask}
         />
       </div>
 
@@ -70,9 +71,11 @@ export function MainForm() {
         <p>O próximo ciclo será de 25 minutos.</p>
       </div>
 
-      <div className='formRow'>
-        <Cycles></Cycles>
-      </div>
+      {state.currentCycle > 0 && (
+        <div className='formRow'>
+          <Cycles/>
+        </div>
+      )}
 
       <div className='formRow'>
         <DefaultButton icon={<PlayCircleIcon />} color='green' />
