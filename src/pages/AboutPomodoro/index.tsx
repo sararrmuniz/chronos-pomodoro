@@ -16,7 +16,7 @@ export function AboutPomodoro() {
         <GenericHtml>
           <Heading>A Técnica Pomodoro 🍅</Heading>
 
-          <p>
+          <p style={{ textAlign: 'center' }}>
             A Técnica Pomodoro é uma metodologia de produtividade criada por{' '}
             <strong>Francesco Cirillo</strong>, que consiste em dividir o
             trabalho em blocos de tempo (os famosos "Pomodoros") intercalados
